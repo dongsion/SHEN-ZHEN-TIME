@@ -1,14 +1,14 @@
 :root {
-  --bg: #071018;
-  --panel: #0f1c28;
-  --panel-2: #152433;
-  --line: #1e3346;
-  --text: #e8f1f8;
-  --muted: #8aa0b5;
-  --warn: #ffb020;
-  --miss: #ff5c5c;
-  --ok: #3ee0a2;
-  --accent: #4cc3ff;
+  --bg: #ffffff;
+  --panel: #f4f5f7;
+  --panel-2: #eceef1;
+  --line: #e3e5e8;
+  --text: #1c1f23;
+  --muted: #8a9099;
+  --warn: #e08a00;
+  --miss: #e0352b;
+  --ok: #12a05c;
+  --accent: #16a34a;
 }
 
 * { box-sizing: border-box; }
@@ -25,12 +25,13 @@ body {
 .clock { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; }
 
 .hero {
-  background: linear-gradient(180deg, #122333, #0d1a26);
+  background: linear-gradient(180deg, #ffffff, #f7f8fa);
   border: 1px solid var(--line);
   border-radius: 22px;
   padding: 18px 18px 16px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 14px rgba(17, 24, 39, 0.06);
 }
 .hero::after {
   content: "";
@@ -40,14 +41,14 @@ body {
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--line-color, #4cc3ff) 28%, transparent);
+  background: color-mix(in srgb, var(--line-color, #16a34a) 12%, transparent);
   filter: blur(8px);
 }
 .line-chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #0a1620;
+  background: #f4f5f7;
   border-radius: 999px;
   padding: 4px 10px 4px 4px;
   font-size: 12px;
@@ -88,7 +89,7 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-.row.active { border-color: color-mix(in srgb, var(--line-color, #4cc3ff) 70%, white); }
+.row.active { border-color: color-mix(in srgb, var(--line-color, #16a34a) 70%, white); }
 .row button {
   background: transparent;
   color: var(--text);
@@ -134,7 +135,7 @@ body {
   font-weight: 800;
   padding: 2px 7px;
   border-radius: 999px;
-  color: #071018;
+  color: #ffffff;
 }
 .picker { display: grid; gap: 8px; }
 .back { background: transparent; border: 0; color: var(--accent); font: inherit; font-weight: 700; padding: 0; cursor: pointer; }
@@ -157,9 +158,9 @@ body {
   cursor: pointer;
 }
 .mode-tab.active {
-  color: var(--text);
+  color: #ffffff;
   border-color: var(--accent);
-  background: #122333;
+  background: var(--accent);
 }
 .group-tabs {
   display: flex;
@@ -179,9 +180,9 @@ body {
   cursor: pointer;
 }
 .group-tab.active {
-  color: var(--text);
+  color: #ffffff;
   border-color: var(--accent);
-  background: #122333;
+  background: var(--accent);
 }
 .bus-chips {
   display: flex;
@@ -214,6 +215,7 @@ body {
   color: var(--text);
   font: inherit;
   cursor: pointer;
+  box-shadow: 0 1px 6px rgba(17, 24, 39, 0.04);
 }
 .line-bar {
   grid-row: 1 / span 2;
@@ -254,7 +256,7 @@ body {
   height: 14px;
   border-radius: 50%;
   border: 3px solid;
-  background: var(--bg);
+  background: #ffffff;
   z-index: 1;
   justify-self: center;
 }
