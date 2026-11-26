@@ -1,0 +1,9 @@
+{
+  "appId": "com.dongsion.shenzhencatch",
+  "appName": "赶这班",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#ffffff"
+  }
+}
