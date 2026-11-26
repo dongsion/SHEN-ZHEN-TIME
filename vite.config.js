@@ -1,9 +1,7 @@
 import { defineConfig } from 'vite'
 
-const nativeBuild = process.env.CAP_BUILD === '1'
-
-export default defineConfig({
-  base: nativeBuild ? '/' : '/SHEN-ZHEN-TIME/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? './' : '/',
   server: {
     host: '0.0.0.0',
     port: 5173,
@@ -14,4 +12,4 @@ export default defineConfig({
     port: 5173,
     allowedHosts: ['.monkeycode-ai.online']
   }
-})
+}))
