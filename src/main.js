@@ -15,6 +15,10 @@ function brandLabel(mode = pickMode) {
   return mode === 'bus' ? '赶这班 · 深圳公交' : '赶这班 · 深圳地铁'
 }
 
+function brandMarkup(mode = pickMode) {
+  return `<div class="brand"><img class="brand-icon" src="${import.meta.env.BASE_URL}logo-mark.svg" alt="" />${brandLabel(mode)}</div>`
+}
+
 function vehicleWord(mode) {
   return mode === 'bus' ? '公交车' : '列车'
 }
@@ -90,7 +94,7 @@ function renderCatch() {
   app.style.setProperty('--line-color', line.color)
   app.innerHTML = `
     <div class="topbar">
-      <div class="brand">${brandLabel(line.kind)}</div>
+      ${brandMarkup(line.kind)}
       <div class="clock">${clockLabel(clock)}</div>
     </div>
     <section class="hero">
@@ -184,7 +188,7 @@ function renderLinePicker(clock) {
   }
   app.innerHTML = `
     <div class="topbar">
-      ${hasWatch() ? '<button class="back" data-back>返回赶车</button>' : `<div class="brand">${brandLabel(pickMode)}</div>`}
+      ${hasWatch() ? '<button class="back" data-back>返回赶车</button>' : brandMarkup(pickMode)}
       <div class="clock">${clockLabel(clock)}</div>
     </div>
     <div class="mode-tabs">

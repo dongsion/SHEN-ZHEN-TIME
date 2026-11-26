@@ -21,7 +21,8 @@ body {
 #app { max-width: 430px; margin: 0 auto; min-height: 100vh; padding: 16px 16px 32px; }
 
 .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-.brand { font-weight: 900; letter-spacing: 0.08em; font-size: 13px; color: var(--muted); }
+.brand { display: inline-flex; align-items: center; gap: 7px; font-weight: 900; letter-spacing: 0.08em; font-size: 13px; color: var(--muted); }
+.brand-icon { width: 22px; height: 22px; border-radius: 6px; }
 .clock { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; }
 
 .hero {
