@@ -140,6 +140,65 @@ body {
 .back { background: transparent; border: 0; color: var(--accent); font: inherit; font-weight: 700; padding: 0; cursor: pointer; }
 .empty { color: var(--muted); padding: 24px 4px; text-align: center; }
 .page-title { font-size: 26px; margin: 8px 0 4px; }
+.mode-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 4px 0 16px;
+}
+.mode-tab {
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.mode-tab.active {
+  color: var(--text);
+  border-color: var(--accent);
+  background: #122333;
+}
+.group-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+.group-tab {
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.group-tab.active {
+  color: var(--text);
+  border-color: var(--accent);
+  background: #122333;
+}
+.bus-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bus-chip {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--c, var(--accent));
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
 .line-grid { display: grid; gap: 8px; }
 .line-card {
   display: grid;

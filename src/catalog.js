@@ -1,4 +1,5 @@
 import { pinyin } from 'pinyin-pro'
+import RAW_BUS_LINES from './bus-lines.js'
 
 const RAW_LINES = [
   {
@@ -228,13 +229,15 @@ const line2Stations = splitStations(RAW_LINES.find((l) => l.id === '2').stations
 const line8Stations = splitStations(RAW_LINES.find((l) => l.id === '8').stations)
 const THROUGH_2_8 = [...line2Stations, ...line8Stations.slice(1)]
 
-export const lines = RAW_LINES.map((raw) => {
+function buildLine(raw, kind) {
   const stations = splitStations(raw.stations)
   const runStations = raw.through ? THROUGH_2_8 : stations
   return {
     id: raw.id,
     name: raw.name,
     color: raw.color,
+    kind,
+    group: raw.group || kind,
     first: raw.first,
     last: raw.last,
     peak: raw.peak,
@@ -245,9 +248,35 @@ export const lines = RAW_LINES.map((raw) => {
     runStations,
     terminals: [runStations[0], runStations[runStations.length - 1]]
   }
-})
+}
 
+export const metroLines = RAW_LINES.map((raw) => buildLine(raw, 'metro'))
+export const busLines = RAW_BUS_LINES.map((raw) => buildLine(raw, 'bus'))
+export const lines = [...metroLines, ...busLines]
 export const lineById = Object.fromEntries(lines.map((line) => [line.id, line]))
+
+export function linesForMode(mode) {
+  return mode === 'bus' ? busLines : metroLines
+}
+
+export function modeOfLine(lineId) {
+  return String(lineId || '').startsWith('bus-') ? 'bus' : 'metro'
+}
+
+export const BUS_GROUPS = [
+  { id: 'num', label: '数字线' },
+  { id: 'M', label: 'M线' },
+  { id: 'B', label: 'B线' },
+  { id: 'E', label: 'E线' },
+  { id: 'peak', label: '高峰' },
+  { id: 'kua', label: '高快' },
+  { id: 'night', label: '夜班' },
+  { id: 'other', label: '其他' }
+]
+
+export function busLinesInGroup(groupId) {
+  return busLines.filter((line) => line.group === groupId)
+}
 
 const stationMap = new Map()
 for (const line of lines) {

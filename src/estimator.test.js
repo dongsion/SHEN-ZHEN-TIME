@@ -46,3 +46,20 @@ test('formatCountdown pads mm:ss', () => {
   assert.equal(formatCountdown(65), '01:05')
   assert.equal(formatCountdown(3723), '1:02:03')
 })
+
+test('bus headway is wider than metro', () => {
+  const bus = {
+    id: 'bus-1',
+    first: '06:30',
+    last: '22:30',
+    peak: 8,
+    off: 12,
+    late: 20,
+    hop: 2.0,
+    runStations: ['火车站', '国贸', '东门', '布心总站']
+  }
+  const result = estimateArrivals(bus, '火车站', '布心总站', { totalMin: 8 * 60 })
+  const gap = result.arrivals[1].etaMin - result.arrivals[0].etaMin
+  assert.equal(result.beforeFirst, false)
+  assert.ok(gap >= 8)
+})

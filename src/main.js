@@ -1,12 +1,23 @@
 import './style.css'
-import { lines, stationById, lineById, linesAtStation } from './catalog.js'
+import { stationById, lineById, linesAtStation, linesForMode, modeOfLine, BUS_GROUPS, busLinesInGroup } from './catalog.js'
 import { estimateArrivals, nowInShenzhen, formatCountdown } from './estimator.js'
 import { loadWatch, saveWatch } from './store.js'
 
 const app = document.getElementById('app')
 let watch = loadWatch()
 let view = 'pick-line'
-let pickLineId = watch?.lineId || '1'
+let pickMode = modeOfLine(watch?.lineId)
+let pickLineId = watch?.lineId || linesForMode(pickMode)[0].id
+let pickBusGroup = lineById[pickLineId]?.group === 'metro' ? 'num' : (lineById[pickLineId]?.group || 'num')
+let pickMBand = 1
+
+function brandLabel(mode = pickMode) {
+  return mode === 'bus' ? '赶这班 · 深圳公交' : '赶这班 · 深圳地铁'
+}
+
+function vehicleWord(mode) {
+  return mode === 'bus' ? '公交车' : '列车'
+}
 
 function hasWatch() {
   return Boolean(watch?.stationId && watch?.lineId && watch?.directionId)
@@ -75,11 +86,11 @@ function renderCatch() {
     remain = formatCountdown(target.secondsLeft)
   }
 
-  const otherLines = linesAtStation(station.id)
+  const otherLines = linesAtStation(station.id).filter((l) => l.kind === line.kind)
   app.style.setProperty('--line-color', line.color)
   app.innerHTML = `
     <div class="topbar">
-      <div class="brand">赶这班 · 深圳地铁</div>
+      <div class="brand">${brandLabel(line.kind)}</div>
       <div class="clock">${clockLabel(clock)}</div>
     </div>
     <section class="hero">
@@ -113,7 +124,7 @@ function renderCatch() {
             </button>
           </div>
         `).join('')}
-      </div>` : `<div class="empty">${result.ended ? '今日已无列车' : '暂无班次'}</div>`}
+      </div>` : `<div class="empty">${result.ended ? `今日已无${vehicleWord(line.kind)}` : '暂无班次'}</div>`}
     </section>
     ${otherLines.length > 1 ? `
     <section class="section">
@@ -147,29 +158,93 @@ function renderCatch() {
   })
   app.querySelector('[data-pick]').onclick = () => {
     pickLineId = watch.lineId
+    pickMode = modeOfLine(watch.lineId)
+    const current = lineById[watch.lineId]
+    if (current?.kind === 'bus') {
+      pickBusGroup = current.group || 'num'
+      if (pickBusGroup === 'M') pickMBand = busMBand(current)
+    }
     view = 'pick-line'
     render()
   }
 }
 
+function busMBand(line) {
+  const n = Number(String(line.name).replace(/\D/g, ''))
+  const band = Math.floor(n / 100)
+  return band >= 5 ? 5 : Math.max(1, band)
+}
+
 function renderLinePicker(clock) {
+  const isBus = pickMode === 'bus'
+  let modeLines = linesForMode(pickMode)
+  if (isBus) {
+    modeLines = busLinesInGroup(pickBusGroup)
+    if (pickBusGroup === 'M') modeLines = modeLines.filter((l) => busMBand(l) === pickMBand)
+  }
   app.innerHTML = `
     <div class="topbar">
-      ${hasWatch() ? '<button class="back" data-back>返回赶车</button>' : '<div class="brand">赶这班 · 深圳地铁</div>'}
+      ${hasWatch() ? '<button class="back" data-back>返回赶车</button>' : `<div class="brand">${brandLabel(pickMode)}</div>`}
       <div class="clock">${clockLabel(clock)}</div>
     </div>
-    <div class="station-name page-title">先选线路</div>
-    <div class="note" style="margin:0 0 14px">点线路，再点站点，不用打字</div>
-    <div class="line-grid">
-      ${lines.map((line) => `
-        <button class="line-card" data-line="${line.id}" style="--c:${line.color}">
-          <span class="line-bar"></span>
-          <span class="line-card-name">${line.name}</span>
-          <span class="line-card-ends">${line.stations[0]} — ${line.stations[line.stations.length - 1]}</span>
-        </button>
-      `).join('')}
+    <div class="mode-tabs">
+      <button class="mode-tab ${pickMode === 'metro' ? 'active' : ''}" data-mode="metro">地铁</button>
+      <button class="mode-tab ${pickMode === 'bus' ? 'active' : ''}" data-mode="bus">公交</button>
     </div>
+    ${isBus ? `
+      <div class="group-tabs">
+        ${BUS_GROUPS.map((g) => `
+          <button class="group-tab ${pickBusGroup === g.id ? 'active' : ''}" data-group="${g.id}">${g.label}</button>
+        `).join('')}
+      </div>
+      ${pickBusGroup === 'M' ? `
+        <div class="group-tabs">
+          ${[1, 2, 3, 4, 5].map((b) => `
+            <button class="group-tab ${pickMBand === b ? 'active' : ''}" data-mband="${b}">${b === 5 ? 'M5xx+' : `M${b}xx`}</button>
+          `).join('')}
+        </div>
+      ` : ''}
+    ` : ''}
+    <div class="station-name page-title">先选线路</div>
+    <div class="note" style="margin:0 0 14px">${isBus ? `全市 ${linesForMode('bus').length} 条公交，点线路再点站点` : '点线路，再点站点，不用打字'}</div>
+    ${isBus ? `
+      <div class="bus-chips">
+        ${modeLines.map((line) => `
+          <button class="bus-chip" data-line="${line.id}" style="--c:${line.color}">${line.name}</button>
+        `).join('')}
+      </div>
+    ` : `
+      <div class="line-grid">
+        ${modeLines.map((line) => `
+          <button class="line-card" data-line="${line.id}" style="--c:${line.color}">
+            <span class="line-bar"></span>
+            <span class="line-card-name">${line.name}</span>
+            <span class="line-card-ends">${line.stations[0]} — ${line.stations[line.stations.length - 1]}</span>
+          </button>
+        `).join('')}
+      </div>
+    `}
   `
+  app.querySelectorAll('[data-mode]').forEach((el) => {
+    el.onclick = () => {
+      pickMode = el.dataset.mode
+      const next = linesForMode(pickMode)
+      if (!next.some((l) => l.id === pickLineId)) pickLineId = next[0].id
+      render()
+    }
+  })
+  app.querySelectorAll('[data-group]').forEach((el) => {
+    el.onclick = () => {
+      pickBusGroup = el.dataset.group
+      render()
+    }
+  })
+  app.querySelectorAll('[data-mband]').forEach((el) => {
+    el.onclick = () => {
+      pickMBand = Number(el.dataset.mband)
+      render()
+    }
+  })
   app.querySelectorAll('[data-line]').forEach((el) => {
     el.onclick = () => {
       pickLineId = el.dataset.line
@@ -196,7 +271,7 @@ function renderStationPicker(clock) {
     </div>
     <div class="line-chip"><span class="dot" style="background:${line.color}"></span>${line.name}</div>
     <div class="station-name page-title">点你的站</div>
-    <div class="note" style="margin:0 0 12px">${line.stations[0]} 方向往下划</div>
+    <div class="note" style="margin:0 0 12px">${line.stations[0]} 方向往下划 · 点站名</div>
     <div class="station-track">
       ${line.stations.map((name, i) => `
         <button class="stop" data-st="${name}">
