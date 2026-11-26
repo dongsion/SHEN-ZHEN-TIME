@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="赶这班">
+  <defs>
+    <linearGradient id="rail" x1="105" y1="0" x2="928" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5cc86f"/>
+      <stop offset="1" stop-color="#1f8a42"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke-linecap="butt">
+    <path d="M358 536 L358 413 A156.5 156.5 0 0 1 671 413 L671 536" stroke="#126b33" stroke-width="84"/>
+    <path d="M420 536 L420 447 A92 92 0 0 1 604 447 L604 536" stroke="#2b9440" stroke-width="26"/>
+  </g>
+  <rect x="105" y="525" width="823" height="22" rx="11" fill="url(#rail)"/>
+  <rect x="489" y="478" width="54" height="62" rx="14" fill="#126b33"/>
+  <g>
+    <polygon points="500,552 505,552 265,914 120,914" fill="#186c34"/>
+    <polygon points="507,552 512,552 430,914 300,914" fill="#2b9440"/>
+    <polygon points="516,552 521,552 720,914 590,914" fill="#46b455"/>
+    <polygon points="523,552 528,552 900,914 760,914" fill="#6cc97a"/>
+  </g>
+</svg>
