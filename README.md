@@ -4,6 +4,8 @@
 
 覆盖深圳市交通运输局公布的全部在运营地铁线路与站点。到站时间按首末班和高峰/平峰发车间隔推算，页面标明「估算」。
 
+网页地址（GitHub Pages）：https://dongsion.github.io/SHEN-ZHEN-TIME/
+
 ```bash
 npm install
 npm run dev
